@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="favicon.ico">
+</head>
+<body>
+
+<!-- Thanh điều hướng -->
+<div id="header"></div>
+
+<main>
+  <!-- Hero -->
+  <section id="hero">
+    <h1>Welcome to Bookify</h1>
+    <p>Discover great books every day</p>
+  </section>
+
+<!-- Giới thiệu -->
+<section id="about">
+  <h2>About</h2>
+  <p>
+    <strong>Bookify</strong> is a web platform developed as a subject project by three students from the School of Digital Communication and Multimedia Engineering, Hanoi University of Science and Technology. We created Bookify with a shared belief that reading should be easier to access, more engaging, and deeply connected to a community. 
+    Our goal is to help readers not only discover meaningful books but also share their thoughts and experiences with others who share the same passion. 
+    Bookify offers a streamlined space where users can explore book recommendations, write reviews, rate their favorite titles, and keep track of what they’ve read. It’s more than just a book listing site — it’s a growing network of readers helping readers.
+    As students passionate about both technology and storytelling, we hope Bookify brings inspiration, insight, and a bit of joy to your reading journey.
+  </p>
+</section>
+
+  <!-- Tìm kiếm -->
+  <section id="search-section">
+    <h2>Search Books</h2>
+    <input type="text" id="topSearchInput" placeholder="Enter book name..." aria-label="Search book input">
+  </section>
+
+  <!-- Thể loại -->
+  <section id="genres">
+    <h2>Genres</h2>
+    <div class="genre-container">
+      <button class="scroll-btn left" title="Scroll left">&#xab;</button>
+      <div class="genre-list">
+        <a href="genre.html?type=science-fiction" class="genre">Science Fiction</a>
+        <a href="genre.html?type=romance" class="genre">Romance</a>
+        <a href="genre.html?type=history" class="genre">History</a>
+        <a href="genre.html?type=adventure" class="genre">Adventure</a>
+        <a href="genre.html?type=technology" class="genre">Technology</a>
+        <a href="genre.html?type=economics" class="genre">Economics</a>
+        <a href="genre.html?type=thriller" class="genre">Thriller</a>
+        <a href="genre.html?type=education" class="genre">Education</a>
+      </div>
+      <button class="scroll-btn right" title="Scroll right">&#xbb;</button>
+    </div>
+  </section>
+
+  <!-- Gợi ý hôm nay -->
+  <section id="suggestions">
+    <h2>Today's Suggestions</h2>
+    <div class="book-row" id="suggestionBooks"></div>
+  </section>
+
+  <!-- Sách top rating -->
+  <section id="top-rated">
+    <h2>Top Rated</h2>
+    <div class="book-grid" id="topRatedBooks"></div>
+  </section>
+
+  <!-- Review mới -->
+  <section id="recent-reviews">
+    <h2>Recent Reviews</h2>
+    <div class="review-list">
+      <div class="review-card">
+        <h3>Thoughts on “Man's Search for Meaning”</h3>
+        <p>“This book helped me reflect on myself…”</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<div id="footer"></div>
+
+<!-- Popup quảng cáo -->
+<div id="promoPopup" class="popup hidden" style="display: none;">
+  <div class="popup-content">
+    <button class="close-btn" title="Close popup">&times;</button>
+    <h3>🎉 Today's Featured Book!</h3>
+    <p><strong>Death Comes As The End</strong> – Explore a classic detective novel by Agatha Christie.</p>
+    <a href="/san-pham/death-comes-as-the-end" class="btn">See more</a>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script src="js/main.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Gọi API và hiển thị sách
+  fetch('http://localhost:4000/api/books')
+    .then(res => res.json())
+    .then(books => {
+      const suggestionBooks = document.getElementById("suggestionBooks");
+      const topRatedBooks = document.getElementById("topRatedBooks");
+
+      suggestionBooks.innerHTML = books.slice(0, 4).map(book => `
+        <div class="book-card" data-id="${book.id}">
+          <img src="${book.cover_url || 'images/default.jpg'}" alt="${book.title}">
+          <h3>${book.title}</h3>
+          <p>${book.author || ''}</p>
+          <p>⭐ ${parseFloat(book.rating || 0).toFixed(1)}</p>
+        </div>
+      `).join("");
+
+      const topBooks = books
+        .filter(book => !isNaN(book.rating))
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 3);
+
+      topRatedBooks.innerHTML = topBooks.map(book => `
+        <div class="book-card" data-id="${book.id}">
+          <img src="${book.cover_url || 'images/default.jpg'}" alt="${book.title}">
+          <h3>${book.title}</h3>
+          <p>${book.author || ''}</p>
+          <p>⭐ ${parseFloat(book.rating || 0).toFixed(1)}</p>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".book-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const id = card.dataset.id;
+          if (id) window.location.href = `book.html?id=${id}`;
+        });
+      });
+    })
+    .catch(() => {
+      document.getElementById("suggestionBooks").innerHTML = "<p>Error loading book data.</p>";
+      document.getElementById("topRatedBooks").innerHTML = "";
+    });
+
+  // Popup quảng cáo dùng JWT
+  const popup = document.getElementById("promoPopup");
+  const closeBtn = popup.querySelector(".close-btn");
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    fetch("http://localhost:4000/api/popup-status", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + token }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.showPopup) {
+        setTimeout(() => {
+          popup.style.display = "block";
+          popup.classList.remove("hidden");
+        }, 60000);
+      }
+    })
+    .catch(err => console.error("Error checking popup status:", err));
+  }
+// Gửi lượt view mỗi khi mở trang
+fetch("http://localhost:4000/api/site-view", {
+  method: "POST"
+});
+
+  closeBtn.addEventListener("click", () => {
+    popup.classList.add("hidden");
+    setTimeout(() => popup.style.display = "none", 300);
+
+    if (token) {
+      fetch("http://localhost:4000/api/popup-status", {
+        method: "POST",
+        headers: { Authorization: "Bearer " + token }
+      }).catch(err => console.error("Error sending popup dismiss:", err));
+    }
+  });
+});
+</script>
+</body>
+</html>

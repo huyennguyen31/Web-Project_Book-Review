@@ -1,0 +1,92 @@
+<header>
+  <nav class="navbar">
+   <!-- Logo -->
+<div class="logo">
+  <a href="index.html" aria-label="Bookify Home">
+    <img src="components/logo2.svg" alt="Bookify Logo" class="logo-icon" />
+  </a>
+</div>
+
+    <!-- Thanh tìm kiếm -->
+    <div class="search-box">
+      <input id="topSearchInput" type="text" placeholder="Search books..." />
+    </div>
+
+    <!-- Menu chính -->
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+
+      <!-- Dropdown Thể loại -->
+      <li class="dropdown">
+        <a href="javascript:void(0)">Genres ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="genre.html?type=science-fiction">Science Fiction</a></li>
+          <li><a href="genre.html?type=romance">Romance</a></li>
+          <li><a href="genre.html?type=history">History</a></li>
+          <li><a href="genre.html?type=adventure">Adventure</a></li>
+          <li><a href="genre.html?type=technology">Technology</a></li>
+          <li><a href="genre.html?type=economics">Economics</a></li>
+          <li><a href="genre.html?type=thriller">Thriller</a></li>
+          <li><a href="genre.html?type=education">Education</a></li>
+        </ul>
+      </li>
+
+      <!-- Khu vực đăng nhập / dropdown user -->
+      <li id="authArea">
+        <a href="login.html" id="loginLink">Login</a>
+      </li>
+    </ul>
+  </nav>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const token = localStorage.getItem("token");
+      const username = localStorage.getItem("username");
+      const authArea = document.getElementById("authArea");
+
+      if (token && username && authArea) {
+        authArea.innerHTML = `
+          <div class="user-dropdown">
+            <div class="user-info">
+              <span>Hello</span>
+              <strong>${username}</strong>
+            </div>
+            <ul class="logout-menu">
+              <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+          </div>
+        `;
+
+        // Xử lý đăng xuất
+        document.getElementById("logoutBtn").addEventListener("click", (e) => {
+          e.preventDefault();
+          localStorage.clear();
+          window.location.href = "login.html";
+        });
+      }
+
+      // Dropdown hover
+      const dropdown = document.querySelector(".dropdown");
+      const menu = dropdown?.querySelector(".dropdown-menu");
+      if (dropdown && menu) {
+        dropdown.addEventListener("mouseenter", () => menu.style.display = "block");
+        dropdown.addEventListener("mouseleave", () => menu.style.display = "none");
+      }
+
+      // Tìm kiếm
+      const topSearchInput = document.getElementById("topSearchInput");
+      if (topSearchInput) {
+        topSearchInput.addEventListener("input", () => {
+          const keyword = topSearchInput.value.toLowerCase();
+          const cards = document.querySelectorAll(".book-card");
+          cards.forEach(card => {
+            const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
+            card.style.display = title.includes(keyword) ? "block" : "none";
+          });
+        });
+      }
+    });
+  </script>
+</header>

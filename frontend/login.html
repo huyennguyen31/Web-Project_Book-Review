@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    body {
+      background-color: #f5f1ec;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 360px;
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .login-container img.logo {
+      width: 60px;
+      margin-bottom: 12px;
+    }
+    h2 {
+      margin-bottom: 24px;
+      font-size: 1.8em;
+      font-weight: 600;
+      color: #333;
+    }
+    form label {
+      display: block;
+      text-align: left;
+      margin: 8px 0 4px;
+      font-size: 0.95em;
+      color: #444;
+    }
+    form input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #bfa68b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #a88f76;
+    }
+    .footer-links {
+      margin-top: 16px;
+      font-size: 0.9em;
+      color: #666;
+    }
+    .footer-links a {
+      color: #bfa68b;
+      text-decoration: none;
+    }
+    .message {
+      font-size: 0.9em;
+      margin-top: 8px;
+    }
+    .message.error {
+      color: red;
+    }
+    .message.success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="components/logo2.svg" alt="Bookify Logo" style="height: 80px; margin-bottom: -10px;" />
+    <h2>Welcome back!</h2>
+    <form id="loginForm">
+      <label for="loginUsername">Username</label>
+      <input type="text" id="loginUsername" required />
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" required />
+      <button type="submit">Login</button>
+      <p id="loginMsg" class="message" aria-live="polite"></p>
+    </form>
+    <div class="footer-links">
+      <a href="#">Forgot password?</a><br>
+      Don't have an account? <a href="register.html">Register now</a>
+    </div>
+  </div>
+
+  <!-- Liên kết đến login.js đã sửa -->
+  <script src="js/login.js"></script>
+</body>
+</html>

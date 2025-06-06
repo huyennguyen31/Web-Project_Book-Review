@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Genres</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .genre-page {
+      max-width: none;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .genre-title {
+      font-size: 2.2em;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .book-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: flex-start;
+    }
+
+    .book-card {
+      width: 160px;
+      background-color: #f8f8f8;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="genre-page">
+    <h2 class="genre-title" id="genreName">Genre</h2>
+    <div class="book-grid" id="bookList"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    const genreMap = {
+      "science-fiction": "Science Fiction",
+      "romance": "Romance",
+      "history": "History",
+      "adventure": "Adventure",
+      "technology": "Technology",
+      "economics": "Economics",
+      "thriller": "Thriller",
+      "education": "Education"
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get('type');
+
+    // Nếu không có type thì show lỗi hoặc thông báo
+    if (!type) {
+      document.getElementById("genreName").innerText = "Unknown Genre";
+      document.getElementById("bookList").innerHTML = "<p>Please select a book genre.</p>";
+    } else {
+      const genreName = genreMap[type] || "Unknown Genre";
+      document.getElementById("genreName").innerText = genreName;
+
+      const bookListContainer = document.getElementById("bookList");
+
+      fetch(`http://localhost:4000/api/books/genre/${type}`)
+        .then(res => res.json())
+        .then(books => {
+          if (!Array.isArray(books) || books.length === 0) {
+            bookListContainer.innerHTML = "<p>No books found in this genre.</p>";
+            return;
+          }
+
+          books.forEach(book => {
+            const card = document.createElement("div");
+            card.className = "book-card";
+            card.dataset.id = book.id;
+            card.innerHTML = `
+              <img src="${book.cover_url || 'images/default.jpg'}" alt="Cover of ${book.title}" />
+              <h4>${book.title}</h4>
+              <p>${book.author}</p>
+              <p>⭐ ${parseFloat(book.rating || 0).toFixed(1)}</p>
+            `;
+            card.addEventListener("click", () => {
+              window.location.href = `book.html?id=${book.id}`;
+            });
+            bookListContainer.appendChild(card);
+          });
+        })
+        .catch(() => {
+          bookListContainer.innerHTML = "<p>Error loading book data.</p>";
+        });
+    }
+  </script>
+</body>
+</html>

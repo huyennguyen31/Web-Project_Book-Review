@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact & Feedback</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .contact-container {
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 40px;
+      background-color: #f9f9f9;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-container h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 2em;
+      color: #8B4513;
+    }
+
+    form label {
+      display: block;
+      font-weight: 600;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1em;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    form textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    form button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background-color: #8B4513;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #683535;
+    }
+
+    #contactMsg {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.95em;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main>
+    <div class="contact-container">
+      <h2>Feedback & Contact</h2>
+      <form id="contactForm">
+        <label for="contactName">Full Name:</label>
+        <input type="text" id="contactName" required />
+
+        <label for="contactEmail">Email:</label>
+        <input type="email" id="contactEmail" required />
+
+        <label for="contactMessage">Your feedback or question:</label>
+        <textarea id="contactMessage" required></textarea>
+
+        <button type="submit">Submit</button>
+        <p id="contactMsg"></p>
+      </form>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("contactForm");
+      const msg = document.getElementById("contactMsg");
+
+      // Hàm kiểm tra email đơn giản
+      function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("contactName").value.trim();
+        const email = document.getElementById("contactEmail").value.trim();
+        const message = document.getElementById("contactMessage").value.trim();
+
+        if (!name || !email || !message) {
+          msg.textContent = "Please fill in all required fields.";
+          msg.style.color = "red";
+          return;
+        }
+
+        if (!isValidEmail(email)) {
+          msg.textContent = "Invalid email address.";
+          msg.style.color = "red";
+          return;
+        }
+
+        msg.textContent = "Sending...";
+        msg.style.color = "black";
+
+        fetch('http://localhost:4000/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message })
+        })
+        .then(res => {
+          if (!res.ok) return res.json().then(data => {
+            throw new Error(data.message || "Error sending feedback.");
+          });
+          return res.json();
+        })
+        .then(data => {
+          msg.textContent = data.message || "Feedback sent successfully! Thank you.";
+          msg.style.color = "green";
+          form.reset();
+        })
+        .catch(err => {
+          msg.textContent = err.message;
+          msg.style.color = "red";
+        });
+      });
+    });
+  </script>
+</body>
+</html>
