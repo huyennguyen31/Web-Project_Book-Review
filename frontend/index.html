@@ -31,10 +31,13 @@
 </section>
 
   <!-- Tìm kiếm -->
-  <section id="search-section">
-    <h2>Search Books</h2>
-    <input type="text" id="topSearchInput" placeholder="Enter book name..." aria-label="Search book input">
-  </section>
+<section id="search-section">
+  <h2>Search Books</h2>
+  <div class="search-box" style="position: relative;">
+    <input type="text" id="topSearchInput" placeholder="Enter book name..." autocomplete="off">
+    <ul id="searchResults" class="search-results"></ul>
+  </div>
+</section>
 
   <!-- Thể loại -->
   <section id="genres">
@@ -132,6 +135,49 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("suggestionBooks").innerHTML = "<p>Error loading book data.</p>";
       document.getElementById("topRatedBooks").innerHTML = "";
     });
+
+   // --- Tìm kiếm sách bằng thanh input ---
+fetch('http://localhost:4000/api/books')
+  .then(res => res.json())
+  .then(allBooks => {
+    const input = document.getElementById("topSearchInput");
+    const resultsBox = document.getElementById("searchResults");
+
+    input.addEventListener("input", () => {
+      const keyword = input.value.toLowerCase();
+      resultsBox.innerHTML = "";
+      if (!keyword) return;
+
+      const matches = allBooks.filter(book => book.title.toLowerCase().includes(keyword)).slice(0, 5);
+      if (matches.length === 0) {
+        resultsBox.innerHTML = `<li>No matching books found</li>`;
+      } else {
+        matches.forEach(book => {
+          const li = document.createElement("li");
+          li.textContent = book.title;
+          li.onclick = () => window.location.href = `book.html?id=${book.id}`;
+          resultsBox.appendChild(li);
+        });
+      }
+    });
+
+    // Enter chọn quyển đầu tiên
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const keyword = input.value.toLowerCase();
+        const found = allBooks.find(book => book.title.toLowerCase().includes(keyword));
+        if (found) window.location.href = `book.html?id=${found.id}`;
+        else alert("❌ Book not found.");
+      }
+    });
+
+    // Click ngoài box để ẩn kết quả
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".search-box")) resultsBox.innerHTML = "";
+    });
+  });
+
 
     // Load recent reviews
   fetch('http://localhost:4000/api/comments/recent')

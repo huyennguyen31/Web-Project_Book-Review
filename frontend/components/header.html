@@ -75,22 +75,6 @@
         dropdown.addEventListener("mouseenter", () => menu.style.display = "block");
         dropdown.addEventListener("mouseleave", () => menu.style.display = "none");
       }
-
-      // Tìm kiếm realtime
-      const topSearchInput = document.getElementById("topSearchInput");
-      if (topSearchInput) {
-        topSearchInput.addEventListener("input", () => {
-          const keyword = topSearchInput.value.toLowerCase();
-          const cards = document.querySelectorAll(".book-card");
-          cards.forEach(card => {
-            const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
-            card.style.display = title.includes(keyword) ? "block" : "none";
-          });
-        });
-      }
-
-      // Gọi hàm nếu header load trực tiếp
-      renderUserDropdown();
     });
   </script>
 </header>
