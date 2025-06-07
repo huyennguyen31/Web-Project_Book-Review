@@ -578,13 +578,49 @@
     </div>
   </div>
 
-<script>
-const token = localStorage.getItem("token");
-if (!token || localStorage.getItem("role") !== "admin") {
-  alert("Access denied."); 
-  window.location.href = "index.html";
-}
+<!-- Logout Button -->
+<div style="position: absolute; top: 20px; right: 20px;">
+  <button id="logoutBtn" style="
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #cdb098, #935e36);
+    color: white;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s ease, transform 0.2s ease;
+  ">
+    Logout
+  </button>
+</div>
 
+
+
+<!-- Script xử lý kiểm tra quyền và Logout -->
+<script>
+  // Kiểm tra quyền truy cập
+  const token = localStorage.getItem("token");
+  if (!token || localStorage.getItem("role") !== "admin") {
+    alert("Access denied.");
+    window.location.href = "index.html";
+  }
+
+  // Gắn sự kiện logout sau khi DOM đã tạo nút
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", function () {
+        localStorage.removeItem("token");
+        sessionStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
+  });
 // Navigation functionality
 document.querySelectorAll('.nav-link').forEach(link => {
   link.addEventListener('click', function(e) {
