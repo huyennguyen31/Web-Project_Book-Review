@@ -44,3 +44,24 @@ exports.getComments = (req, res) => {
     res.json(results);
   });
 };
+
+//Lấy reviewreview
+exports.getRecentComments = (req, res) => {
+  const sql = `
+    SELECT c.content, c.rating, u.username, b.title AS book_title
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+    JOIN books b ON c.book_id = b.id
+    ORDER BY c.created_at DESC
+    LIMIT 5
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Lỗi khi lấy bình luận mới nhất:', err);
+      return res.status(500).json({ message: 'Lỗi server khi lấy comment' });
+    }
+    res.json(results);
+  });
+};
+

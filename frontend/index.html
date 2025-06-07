@@ -68,14 +68,9 @@
   </section>
 
   <!-- Review mới -->
-  <section id="recent-reviews">
+ <section id="recent-reviews">
     <h2>Recent Reviews</h2>
-    <div class="review-list">
-      <div class="review-card">
-        <h3>Thoughts on “Man's Search for Meaning”</h3>
-        <p>“This book helped me reflect on myself…”</p>
-      </div>
-    </div>
+    <div class="review-list" id="reviewList"></div>
   </section>
 </main>
 
@@ -103,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const suggestionBooks = document.getElementById("suggestionBooks");
       const topRatedBooks = document.getElementById("topRatedBooks");
 
-      suggestionBooks.innerHTML = books.slice(0, 4).map(book => `
+      suggestionBooks.innerHTML = books.slice(0, 10).map(book => `
         <div class="book-card" data-id="${book.id}">
           <img src="${book.cover_url || 'images/default.jpg'}" alt="${book.title}">
           <h3>${book.title}</h3>
@@ -115,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const topBooks = books
         .filter(book => !isNaN(book.rating))
         .sort((a, b) => b.rating - a.rating)
-        .slice(0, 3);
+        .slice(0,10);
 
       topRatedBooks.innerHTML = topBooks.map(book => `
         <div class="book-card" data-id="${book.id}">
@@ -138,6 +133,21 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("topRatedBooks").innerHTML = "";
     });
 
+    // Load recent reviews
+  fetch('http://localhost:4000/api/comments/recent')
+    .then(res => res.json())
+    .then(reviews => {
+      const reviewList = document.getElementById("reviewList");
+      reviewList.innerHTML = reviews.slice(0, 5).map(review => `
+        <div class="review-card">
+          <h3>${review.username} on “${review.book_title}”</h3>
+          <p>“${review.content}”</p>
+        </div>
+      `).join("");
+    })
+    .catch(() => {
+      document.getElementById("reviewList").innerHTML = "<p>Failed to load reviews.</p>";
+    });
   // Popup quảng cáo dùng JWT
   const popup = document.getElementById("promoPopup");
   const closeBtn = popup.querySelector(".close-btn");

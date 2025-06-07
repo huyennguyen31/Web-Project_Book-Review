@@ -1,11 +1,11 @@
 <header>
   <nav class="navbar">
-   <!-- Logo -->
-<div class="logo">
-  <a href="index.html" aria-label="Bookify Home">
-    <img src="components/logo2.svg" alt="Bookify Logo" class="logo-icon" />
-  </a>
-</div>
+    <!-- Logo -->
+    <div class="logo">
+      <a href="index.html" aria-label="Bookify Home">
+        <img src="components/logo2.svg" alt="Bookify Logo" class="logo-icon" />
+      </a>
+    </div>
 
     <!-- Thanh tìm kiếm -->
     <div class="search-box">
@@ -41,7 +41,7 @@
   </nav>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    function renderUserDropdown() {
       const token = localStorage.getItem("token");
       const username = localStorage.getItem("username");
       const authArea = document.getElementById("authArea");
@@ -50,7 +50,7 @@
         authArea.innerHTML = `
           <div class="user-dropdown">
             <div class="user-info">
-              <span>Hello</span>
+              <span>Hello </span>
               <strong>${username}</strong>
             </div>
             <ul class="logout-menu">
@@ -59,14 +59,15 @@
           </div>
         `;
 
-        // Xử lý đăng xuất
         document.getElementById("logoutBtn").addEventListener("click", (e) => {
           e.preventDefault();
           localStorage.clear();
           window.location.href = "login.html";
         });
       }
+    }
 
+    document.addEventListener("DOMContentLoaded", () => {
       // Dropdown hover
       const dropdown = document.querySelector(".dropdown");
       const menu = dropdown?.querySelector(".dropdown-menu");
@@ -75,7 +76,7 @@
         dropdown.addEventListener("mouseleave", () => menu.style.display = "none");
       }
 
-      // Tìm kiếm
+      // Tìm kiếm realtime
       const topSearchInput = document.getElementById("topSearchInput");
       if (topSearchInput) {
         topSearchInput.addEventListener("input", () => {
@@ -87,6 +88,9 @@
           });
         });
       }
+
+      // Gọi hàm nếu header load trực tiếp
+      renderUserDropdown();
     });
   </script>
 </header>
