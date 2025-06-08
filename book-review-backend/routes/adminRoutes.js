@@ -81,7 +81,7 @@ router.get('/users/:id/comments', verifyToken, isAdmin, (req, res) => {
 router.delete('/comments/:id', verifyToken, isAdmin, adminController.deleteComment);
 
 // [9] Lấy và cập nhật nội dung About/Contact/Footer
-router.get('/page-content', verifyToken, isAdmin, adminController.getPageContent);
+router.get('/page-content', adminController.getPageContent);
 router.put('/page-content', verifyToken, isAdmin, adminController.updatePageContent);
 
 module.exports = router;

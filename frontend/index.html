@@ -18,16 +18,10 @@
     <h1>Welcome to Bookify</h1>
     <p>Discover great books every day</p>
   </section>
-
-<!-- Giới thiệu -->
+<!-- About -->
 <section id="about">
   <h2>About</h2>
-  <p>
-    <strong>Bookify</strong> is a web platform developed as a subject project by three students from the School of Digital Communication and Multimedia Engineering, Hanoi University of Science and Technology. We created Bookify with a shared belief that reading should be easier to access, more engaging, and deeply connected to a community. 
-    Our goal is to help readers not only discover meaningful books but also share their thoughts and experiences with others who share the same passion. 
-    Bookify offers a streamlined space where users can explore book recommendations, write reviews, rate their favorite titles, and keep track of what they’ve read. It’s more than just a book listing site — it’s a growing network of readers helping readers.
-    As students passionate about both technology and storytelling, we hope Bookify brings inspiration, insight, and a bit of joy to your reading journey.
-  </p>
+  <p id="aboutContent">Loading about content...</p>
 </section>
 
   <!-- Tìm kiếm -->
@@ -77,9 +71,6 @@
   </section>
 </main>
 
-<!-- Footer -->
-<div id="footer"></div>
-
 <!-- Popup quảng cáo -->
 <div id="promoPopup" class="popup hidden" style="display: none;">
   <div class="popup-content">
@@ -90,6 +81,14 @@
   </div>
 </div>
 
+<!-- Contact -->
+<section id="contact" style="padding: 0 40px;">
+  <h2>Contact</h2>
+  <p id="contactContent">Liên hệ tại contact@bookify.com</p>
+</section>
+
+<!-- Footer -->
+<footer id="footerContent" style="text-align: center; padding: 20px; font-size: 0.9rem;"></footer>
 <!-- JavaScript -->
 <script src="js/main.js"></script>
 <script>
@@ -231,6 +230,18 @@ fetch("http://localhost:4000/api/site-view", {
       }).catch(err => console.error("Error sending popup dismiss:", err));
     }
   });
+  // Load content from backend (about, contact, footer)
+fetch("http://localhost:4000/api/admin/page-content")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("aboutContent").innerText = data.about || "No about info.";
+    document.getElementById("contactContent").innerText = data.contact || "No contact info.";
+    document.getElementById("footerContent").innerText = data.footer || "© Bookify";
+  })
+  .catch(() => {
+    console.error("❌ Failed to load page content.");
+  });
+
 });
 </script>
 </body>
