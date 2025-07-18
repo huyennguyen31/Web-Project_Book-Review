@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-// ✅ Thêm bình luận và cập nhật lại rating sách
+// Thêm bình luận và cập nhật lại rating sách
 exports.addComment = (req, res) => {
   const { bookId, userId, content, rating } = req.body;
 
@@ -8,7 +8,7 @@ exports.addComment = (req, res) => {
   db.query(sql, [bookId, userId, content, rating], (err) => {
     if (err) return res.status(500).json({ message: 'Error while adding comment' });
 
-    // ✅ Sau khi thêm xong, cập nhật lại bảng books với thông tin rating
+    // Sau khi thêm xong, cập nhật lại bảng books với thông tin rating
     const updateSql = `
       UPDATE books b
       JOIN (
@@ -27,7 +27,7 @@ exports.addComment = (req, res) => {
   });
 };
 
-// ✅ Lấy danh sách bình luận theo sách
+// Lấy danh sách bình luận theo sách
 exports.getComments = (req, res) => {
   const bookId = req.params.bookId;
 

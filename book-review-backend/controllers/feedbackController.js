@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 function isValidEmail(email) {
-  if (!email) return true; // Nếu email không bắt buộc, bỏ qua check
+  if (!email) return true;
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 }

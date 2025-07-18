@@ -11,7 +11,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const existingLinks = new Set();
 
-// 🔁 Tải danh sách sách đã có để tránh trùng lặp
+// Tải danh sách sách đã có để tránh trùng lặp
 const loadExistingBooks = async () => {
   try {
     const res = await axios.get('http://localhost:4000/api/books');
@@ -26,7 +26,7 @@ const loadExistingBooks = async () => {
   }
 };
 
-// 🔍 Tìm sách từ từ khóa
+// Tìm sách từ từ khóa
 const searchBooks = async (query) => {
   const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=150`;
   try {
@@ -38,7 +38,7 @@ const searchBooks = async (query) => {
   }
 };
 
-// 🧠 Phân loại thể loại từ subjects
+// Phân loại thể loại từ subjects
 const extractGenreFromSubjects = (subjects = []) => {
   const text = subjects.join(' ').toLowerCase();
 
@@ -54,7 +54,7 @@ const extractGenreFromSubjects = (subjects = []) => {
   return 'unknown';
 };
 
-// 🚀 Gửi OLID về backend
+// Gửi OLID về backend
 const importBookByOLID = async (olid, retry = 0) => {
   const link = `https://openlibrary.org/books/${olid}`;
   if (existingLinks.has(link)) {
@@ -101,7 +101,7 @@ const importBookByOLID = async (olid, retry = 0) => {
   }
 };
 
-// 🔁 Nhập theo từ khóa (thể loại)
+// Nhập theo từ khóa (thể loại)
 const importBooksByKeyword = async (keyword) => {
   console.log(`\n📚 Nhập sách thể loại: ${keyword}`);
   const books = await searchBooks(keyword);
@@ -120,7 +120,7 @@ const importBooksByKeyword = async (keyword) => {
   console.log(`📘 [${keyword}] ✅ ${success} thành công – ❌ ${fail} bị trùng/lỗi`);
 };
 
-// ▶️ Hàm chính
+// Hàm chính
 const main = async () => {
   const genres = [
     'science fiction',
